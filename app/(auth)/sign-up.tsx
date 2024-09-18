@@ -5,6 +5,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import FormField from "@/components/form-field";
 import CustomButton from "@/components/custombutton";
 import { router, Link } from "expo-router";
+import { createUser } from "@/lib/appwrite";
 const SignUp = () => {
   const [form, setForm] = React.useState({
     username: "",
@@ -14,7 +15,9 @@ const SignUp = () => {
 
   const [isSubmitting, setSubmitting] = React.useState(false);
 
-  const submitInfo = () => {};
+  const submitInfo = async () => {
+    createUser();
+  };
   return (
     <SafeAreaView className="h-full bg-primary">
       <ScrollView>
