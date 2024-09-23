@@ -16,21 +16,19 @@ const SignInUser = () => {
   const [isSubmitting, setSubmitting] = React.useState(false);
 
   const submitInfo = async () => {
-    if (!form.email || !form.password)
-      return Alert.alert("All fields are required");
-
-    setSubmitting(true);
-    try {
-      const res = await SignIn(form.email, form.password);
-
-      if (res) {
-        router.push("/home");
-      }
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setSubmitting(false);
-    }
+    // if (!form.email || !form.password)
+    //   return Alert.alert("All fields are required");
+    // setSubmitting(true);
+    // try {
+    //   const res = await SignIn(form.email, form.password);
+    //   if (res) {
+    //     router.push("/home");
+    //   }
+    // } catch (error) {
+    //   Alert.alert("Error", error.message);
+    // } finally {
+    //   setSubmitting(false);
+    // }
   };
   return (
     <SafeAreaView className="h-full bg-primary">

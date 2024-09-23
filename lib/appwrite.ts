@@ -27,6 +27,7 @@ export const createUser = async (
   username: string
 ) => {
   try {
+    // Create a new user account
     const newAccount = await account.create(
       ID.unique(),
       email,
@@ -34,45 +35,53 @@ export const createUser = async (
       username
     );
 
-    if (!newAccount) {
-      throw new Error("Account not created");
+    if (!newAccount || !newAccount.$id) {
+      throw new Error("Account creation failed or account ID is missing");
     }
 
+    // Generate avatar URL based on initials
     const avatarUrl = avatars.getInitials(username);
 
+    // Sign in the new user after account creation
     await SignIn(email, password);
 
+    // Create a new document in the users collection
     const newUser = await db.createDocument(
       config.databaseId,
       config.userCollectionId,
-      ID.unique(),
+      ID.unique(), // Unique ID for the document
       {
-        accountId: newAccount.$id,
+        account_id: newAccount.$id!, // Use the account ID from the created account
         email: email,
         username: username,
-        avatarUrl: avatarUrl,
+        avatar: avatarUrl, // Optional field for avatar
       }
     );
 
-    return newUser;
-  } catch (error) {
-    // Log only relevant error details
-    // console.error("Error creating user:", error.message || "Unknown error");
+    return newUser; // Return the newly created user document
+  } catch (error: any) {
+    // Log the error message for debugging
+    console.error("Error creating user:", error.message || "Unknown error");
 
-    // Throw only the message to avoid cyclical structure
+    // Throw only the error message to avoid excessive details
     throw new Error(error.message || "User creation failed");
   }
 };
 
 export async function SignIn(email: string, password: string) {
   try {
+    // Sign out if a session is already active
+    try {
+      await account.deleteSession("current");
+    } catch (error) {
+      console.log("No active session to sign out from.");
+    }
+
+    // Create a new session
     const session = await account.createEmailPasswordSession(email, password);
     return session;
-  } catch (error) {
-    // Log only relevant error details
+  } catch (error: any) {
     console.error("Error signing in:", error.message || "Unknown error");
-
-    // Throw only the message to avoid cyclical structure
     throw new Error(error.message || "Sign-in failed");
   }
 }
