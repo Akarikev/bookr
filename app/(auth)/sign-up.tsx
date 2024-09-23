@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView, Image, Alert } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -16,7 +16,21 @@ const SignUp = () => {
   const [isSubmitting, setSubmitting] = React.useState(false);
 
   const submitInfo = async () => {
-    createUser();
+    if (!form.username || !form.email || !form.password)
+      return Alert.alert("All fields are required");
+
+    setSubmitting(true);
+
+    try {
+      const res = await createUser(form.username, form.email, form.password);
+
+      // setSubmitting(false);
+      router.push("/home");
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setSubmitting(false);
+    }
   };
   return (
     <SafeAreaView className="h-full bg-primary">
@@ -36,20 +50,20 @@ const SignUp = () => {
           <FormField
             title="Username"
             value={form.username}
-            handleChangeText={(e: any) => setForm({ ...form, username: e })}
+            handleChangeText={(e: string) => setForm({ ...form, username: e })}
             otherStyles="mt-7"
           />
           <FormField
-            title="Password"
-            value={form.password}
-            handleChangeText={(e: any) => setForm({ ...form, password: e })}
+            title="Email"
+            value={form.email}
+            handleChangeText={(e: string) => setForm({ ...form, email: e })}
             otherStyles="mt-7 mb-7"
           />
           <FormField
             title="Password"
             value={form.password}
-            handleChangeText={(e: any) => setForm({ ...form, password: e })}
-            otherStyles="mt-7 mb-7"
+            handleChangeText={(e: string) => setForm({ ...form, password: e })}
+            otherStyles=" mb-7"
           />
 
           <CustomButton
