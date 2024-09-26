@@ -9,14 +9,21 @@ import {
   View,
 } from "react-native";
 import React from "react";
-import { Link, router } from "expo-router";
+import { Link, Redirect, router } from "expo-router";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { icons, images } from "@/constants";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import CustomButton from "@/components/custombutton";
+import { useGlobalContext } from "@/context/globals";
 
 const Home = () => {
+  const { isLoggedIn, loading } = useGlobalContext();
+
+  if (!loading && isLoggedIn) {
+    return Redirect({ href: "/home" });
+  }
+
   return (
     <>
       <SafeAreaView className="flex flex-1 h-full bg-primary ">

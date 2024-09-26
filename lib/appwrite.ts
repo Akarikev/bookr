@@ -1,4 +1,11 @@
-import { Client, Account, ID, Avatars, Databases } from "react-native-appwrite";
+import {
+  Client,
+  Account,
+  ID,
+  Avatars,
+  Databases,
+  Query,
+} from "react-native-appwrite";
 
 const user = new Client();
 
@@ -85,3 +92,26 @@ export async function SignIn(email: string, password: string) {
     throw new Error(error.message || "Sign-in failed");
   }
 }
+
+export const getCurrentUser = async () => {
+  try {
+    const currentAccount = await account.get();
+
+    if (!currentAccount) {
+      throw Error;
+    }
+
+    const currentUser = await db.listDocuments(
+      config.databaseId,
+      config.userCollectionId,
+      [Query.equal("account_id", currentAccount.$id)]
+    );
+
+    if (!currentUser) throw Error;
+
+    return currentUser.documents[0];
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};

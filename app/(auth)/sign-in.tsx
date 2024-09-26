@@ -6,7 +6,8 @@ import FormField from "@/components/form-field";
 import CustomButton from "@/components/custombutton";
 import { router, Link } from "expo-router";
 import { SignIn } from "@/lib/appwrite";
-
+import { toast } from "@backpackapp-io/react-native-toast";
+import { emailRegex } from "@/local";
 const SignInUser = () => {
   const [form, setForm] = React.useState({
     email: "",
@@ -16,19 +17,22 @@ const SignInUser = () => {
   const [isSubmitting, setSubmitting] = React.useState(false);
 
   const submitInfo = async () => {
-    // if (!form.email || !form.password)
-    //   return Alert.alert("All fields are required");
-    // setSubmitting(true);
-    // try {
-    //   const res = await SignIn(form.email, form.password);
-    //   if (res) {
-    //     router.push("/home");
-    //   }
-    // } catch (error) {
-    //   Alert.alert("Error", error.message);
-    // } finally {
-    //   setSubmitting(false);
-    // }
+    if (!form.email || !form.password)
+      return toast.error("All fields are required");
+    setSubmitting(true);
+    try {
+      const res = await SignIn(emailRegex(form.email), form.password);
+      if (res) {
+        toast.success("Logged in successfully", {
+          duration: 5000,
+        });
+        router.push("/home");
+      }
+    } catch (error) {
+      toast.error("Error", error.message);
+    } finally {
+      setSubmitting(false);
+    }
   };
   return (
     <SafeAreaView className="h-full bg-primary">

@@ -2,6 +2,10 @@ import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect } from "react";
 import { Slot, SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Toasts } from "@backpackapp-io/react-native-toast";
+import GlobalProvider from "@/context/globals";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -27,12 +31,21 @@ export default function RootLayout() {
   if (!fontsLoaded && !error) return null;
   return (
     <>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        {/* <Stack.Screen name="/search/[query]" options={{ headerShown: false }} /> */}
-      </Stack>
+    <GlobalProvider>
+      <SafeAreaProvider>
+        <GestureHandlerRootView className="h-full">
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            {/* <Stack.Screen name="/search/[query]" options={{ headerShown: false }} /> */}
+          </Stack>
+
+          <Toasts />
+        </GestureHandlerRootView>
+      </SafeAreaProvider>
+      </GlobalProvider>
+
     </>
   );
 }
