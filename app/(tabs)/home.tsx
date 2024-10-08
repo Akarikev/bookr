@@ -13,7 +13,7 @@ import SearchInput from "@/components/searchinput";
 import Trending from "@/components/trending";
 import EmptyState from "@/components/emptystate";
 import { toast } from "@backpackapp-io/react-native-toast";
-import { getAllPost } from "@/lib/appwrite";
+import { getAllPost, getLatestPosts } from "@/lib/appwrite";
 
 import useAppwrite from "@/lib/useappwrite";
 import VideoCard from "@/components/videocard";
@@ -22,6 +22,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 const Home = () => {
   const [refreshing, setRefreshing] = React.useState(false);
   const { data: posts, refetch, isLoading } = useAppwrite(getAllPost);
+  const { data: latestPosts } = useAppwrite(getLatestPosts);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -76,7 +77,7 @@ const Home = () => {
                     latest videos
                   </Text>
 
-                  <Trending posts={[{ id: 1 }, { id: 2 }]} />
+                  <Trending posts={latestPosts ?? []} />
                 </View>
               </View>
             );

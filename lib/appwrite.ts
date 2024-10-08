@@ -128,3 +128,16 @@ export const getAllPost = async () => {
     throw new Error(error);
   }
 };
+export const getLatestPosts = async () => {
+  try {
+    const posts = await db.listDocuments(
+      config.databaseId,
+      config.videoCollectionId,
+      [Query.orderDesc("$createdAt", Query.limit(5))]
+    );
+
+    return posts.documents;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
